@@ -4,7 +4,7 @@ import { Text3D, Html, Edges } from '@react-three/drei';
 import '../lightSweep.js';
 import { gsap } from 'gsap';
 import Flylines from './Flylines.jsx';
-import Bird from './Bird.jsx';
+import Bird from './Bird.js';
 
 const Top = ({ baseHeight, midHeightScale, topHeightScale, blocks, values, mapCenter }) => {
 	const scale = 3.15;

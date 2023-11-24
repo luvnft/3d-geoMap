@@ -16,7 +16,7 @@ function App() {
   const baseHeight = 0.2;
   const midHeightScale = 4;
   const topHeightScale = 0.01;
-  const center = [113.531343, 24.489826];
+  const center = [113.553986, 22.224979];
   const geoJson = geoJson_anhui;
   const countValues = countValues_anhui;
 

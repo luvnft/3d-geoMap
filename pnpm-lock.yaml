@@ -17,6 +17,7 @@ specifiers:
   react-dom: ^18.2.0
   three: ^0.155.0
   three-stdlib: ^2.24.1
+  typescript: ^5.3.2
   vite: ^4.4.5
 
 dependencies:
@@ -38,6 +39,7 @@ devDependencies:
   eslint-plugin-react: 7.33.2_eslint@8.53.0
   eslint-plugin-react-hooks: 4.6.0_eslint@8.53.0
   eslint-plugin-react-refresh: 0.4.4_eslint@8.53.0
+  typescript: 5.3.2
   vite: 4.5.0
 
 packages:
@@ -3089,6 +3091,12 @@ packages:
       call-bind: 1.0.5
       for-each: 0.3.3
       is-typed-array: 1.1.12
+    dev: true
+
+  /typescript/5.3.2:
+    resolution: {integrity: sha512-6l+RyNy7oAHDfxC4FzSJcz9vnjTKxrLpDG5M2Vu4SHRVNg6xzqZp6LYSR9zjqQTu8DU/f5xwxUdADOkbrIX2gQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
     dev: true
 
   /unbox-primitive/1.0.2:
