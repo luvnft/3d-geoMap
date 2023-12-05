@@ -41,7 +41,20 @@ const Map = ({
   geoJson: JSONData.MapJSONProvince;
   mapCenter: [number, number];
 }) => {
-  const map = new THREE.Object3D();
+  const map: Object3DWithProperties = {
+    obj: new THREE.Object3D(),
+    properties: {
+      adcode: 0,
+      name: "",
+      center: [0, 0],
+      centroid: [0, 0],
+      childrenNum: 0,
+      level: "",
+      parent: "",
+      subFeatureIndex: 0,
+      acroutes: [],
+    },
+  };
   const projection = d3.geoMercator().center(mapCenter).translate([0, 0]);
 
   processing(geoJson, values).features.forEach((element, index) => {
@@ -95,14 +108,14 @@ const Map = ({
         province.obj.add(line);
       });
     });
-    map.add(province.obj);
+    map.obj.add(province.obj);
   });
 
   return (
     <group>
-      <Base blocks={map.children} />
+      <Base blocks={map.obj.children} />
       <Mid
-        blocks={map.children}
+        blocks={map.obj.children}
         baseHeight={baseHeight}
         midHeightScale={midHeightScale}
       />
