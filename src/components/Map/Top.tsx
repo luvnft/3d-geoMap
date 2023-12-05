@@ -1,10 +1,13 @@
 import * as THREE from "three";
 import { useRef, useState } from "react";
 import { Text3D, Html, Edges } from "@react-three/drei";
-import "../lightSweep.js";
 import { gsap } from "gsap";
-import Flylines from "./Flylines.js";
-import Bird from "./Bird.js";
+import React from "react";
+
+export type Object3DWithProperties = {
+  obj: THREE.Object3D;
+  properties: JSONData.MapJSONCityWithValue["properties"];
+};
 
 const Top = ({
   baseHeight,
@@ -13,6 +16,13 @@ const Top = ({
   blocks,
   values,
   mapCenter,
+}: {
+  baseHeight: number;
+  midHeightScale: number;
+  topHeightScale: number;
+  blocks: Object3DWithProperties;
+  values: JSONData.Statistics;
+  mapCenter: [number, number];
 }) => {
   const scale = 3.15;
 
@@ -136,10 +146,6 @@ const Top = ({
   };
   return (
     <>
-      {/* 飞鸟 */}
-      <Bird targetPosition={targetPosition} />
-      {/* 飞线 */}
-      <Flylines lines={lines} />
       {/* 点击后的城市maker */}
       <Html
         style={{

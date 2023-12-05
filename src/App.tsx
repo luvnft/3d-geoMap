@@ -5,28 +5,22 @@ import {
   Environment,
   Lightformer,
 } from "@react-three/drei";
-import Grid from "./components/Grid";
-import Map from "./components/Map/Map";
+import Map from "./components/Map/Index";
 import countValues_anhui from "./assets/data/values_anhui.json";
 import geoJson_anhui from "./assets/data/广东省.json";
-import { Suspense, memo } from "react";
-import Loading from "./components/Loading";
+import { Suspense } from "react";
 import React from "react";
 
 function App() {
   const baseHeight = 0.2;
   const midHeightScale = 4;
   const topHeightScale = 0.01;
-  const center = [113.553986, 22.224979];
-  const geoJson = geoJson_anhui;
+  const center: [number, number] = [113.553986, 22.224979];
+  const geoJson = geoJson_anhui as JSONData.MapJSONProvince;
   const countValues = countValues_anhui;
 
-  console.log(typeof countValues);
-
-  const MemoGrid = memo(Grid);
-
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense>
       <Canvas camera={{ position: [0, 12, 16], fov: 50 }}>
         <ambientLight intensity={2} />
         <directionalLight intensity={20} position={[0, 0, 1]} />
@@ -82,7 +76,6 @@ function App() {
           position={[0, -0.0001, 0]}
           color="#006afe"
         />
-        <MemoGrid baseHeight={baseHeight} values={countValues} />
         <Map
           baseHeight={baseHeight}
           midHeightScale={midHeightScale}
