@@ -5,12 +5,13 @@ import {
   Environment,
   Lightformer,
 } from "@react-three/drei";
-import Grid from "./Grid";
-import Map from "./Map/Map";
-import countValues_anhui from "./assets/values_anhui.json";
-import geoJson_anhui from "./assets/广东省.json";
+import Grid from "./components/Grid";
+import Map from "./components/Map/Map";
+import countValues_anhui from "./assets/data/values_anhui.json";
+import geoJson_anhui from "./assets/data/广东省.json";
 import { Suspense, memo } from "react";
-import Loading from "./Loading";
+import Loading from "./components/Loading";
+import React from "react";
 
 function App() {
   const baseHeight = 0.2;
@@ -19,6 +20,8 @@ function App() {
   const center = [113.553986, 22.224979];
   const geoJson = geoJson_anhui;
   const countValues = countValues_anhui;
+
+  console.log(typeof countValues);
 
   const MemoGrid = memo(Grid);
 
