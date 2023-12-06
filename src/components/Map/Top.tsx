@@ -139,15 +139,20 @@ const Top = ({
           duration: 0.3,
           z: topHeightScale,
         });
-        (namesRef.current[index].material as THREE.MeshBasicMaterial).color =
-          new THREE.Color("#9cb8e4");
-        (namesRef.current[index].material as THREE.Material).opacity = 1;
+        (
+          blocksRef.current[lastIndex].material as THREE.MeshBasicMaterial
+        ).color = new THREE.Color("#9cb8e4");
+        (
+          namesRef.current[lastIndex].material as THREE.MeshBasicMaterial
+        ).color = new THREE.Color("#ffffff");
       }
     });
     gsap.to(blocksRef.current[index].scale, { duration: 0.3, z: 0.8 });
     (blocksRef.current[index].material as THREE.MeshBasicMaterial).color =
       new THREE.Color("#ffb47e");
-    (namesRef.current[index].material as THREE.Material).opacity = 0;
+    (namesRef.current[index].material as THREE.MeshBasicMaterial).color =
+      new THREE.Color("#000000");
+    console.log(namesRef.current[index]);
     // bird
     setTargetPosition({
       ...targetPosition,
@@ -165,25 +170,11 @@ const Top = ({
     });
     (blocksRef.current[index].material as THREE.MeshBasicMaterial).color =
       new THREE.Color("#9cb8e4");
-    (namesRef.current[index].material as THREE.MeshBasicMaterial).opacity = 1;
+    (namesRef.current[index].material as THREE.MeshBasicMaterial).color =
+      new THREE.Color("#ffffff");
   };
   return (
     <>
-      {/* 点击后的城市maker */}
-      <Html
-        style={{
-          transition: "all 0.2s",
-          opacity: makerVisible ? 1 : 0,
-          transform: `scale(${makerVisible ? 1 : 0.25})`,
-          userSelect: "none",
-          width: "200px",
-          fontFamily: "zaozigongfangtianliti",
-          color: "#242424",
-        }}
-        position={makerPosition}
-      >
-        <h3>{makerValue}</h3>
-      </Html>
       {/* 城市名称 */}
       <group
         rotation={[0, Math.PI * 1.1, Math.PI]}
@@ -195,10 +186,10 @@ const Top = ({
               ref={(el) => {
                 if (el) namesRef.current[index] = el;
               }}
-              font={"./MFTianLiNoncommercial_Regular.json"}
+              font={"/src/assets/font/MFTianLiNoncommercial_Regular.json"}
               position={[
                 (item.properties.centroid[0] - mapCenter[0]) * scale,
-                0.01,
+                -0.2,
                 (item.properties.centroid[1] - mapCenter[1]) * scale,
               ]}
               rotation={[-Math.PI * 0.5, Math.PI, Math.PI]}

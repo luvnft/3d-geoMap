@@ -43,27 +43,7 @@ const Map = ({
 }) => {
   const map: Object3DWithProperties = {
     obj: new THREE.Object3D(),
-    properties: [
-      {
-        type: "",
-        properties: {
-          adcode: 0,
-          name: "",
-          center: [0, 0],
-          centroid: [0, 0],
-          childrenNum: 0,
-          level: "",
-          parent: "",
-          subFeatureIndex: 0,
-          acroutes: [],
-        },
-        geometry: {
-          type: "",
-          coordinates: [[[[0, 0]]]],
-        },
-        value: 0,
-      },
-    ],
+    properties: [],
   };
   const projection = d3.geoMercator().center(mapCenter).translate([0, 0]);
 
@@ -127,6 +107,7 @@ const Map = ({
     });
     map.obj.add(province.obj);
     map.properties.push(province.properties);
+    console.log(map);
   });
 
   return (
