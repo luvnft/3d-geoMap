@@ -3,10 +3,11 @@ import { useRef, useState } from "react";
 import { Text3D, Html, Edges } from "@react-three/drei";
 import { gsap } from "gsap";
 import React from "react";
+import { ThreeEvent } from "@react-three/fiber";
 
 export type Object3DWithProperties = {
   obj: THREE.Object3D;
-  properties: JSONData.MapJSONCityWithValue["properties"];
+  properties: JSONData.MapJSONCityWithValue[];
 };
 
 const Top = ({
@@ -29,11 +30,14 @@ const Top = ({
   let rankInfo = Object.keys(values.features).map(
     (key) => `${key} ${values.features[key]}`
   );
-  rankInfo.sort((a, b) => b.split(" ")[1] - a.split(" ")[1]);
+  rankInfo.sort(
+    (a, b) => parseFloat(b.split(" ")[1]) - parseFloat(a.split(" ")[1])
+  );
   rankInfo = rankInfo.map((item, index) => index + 1 + "." + item);
-  let rank = {};
+  let rank: Record<string, string> = {};
   rankInfo.forEach((item) => {
-    rank[item.split(".")[1].split(" ")[0]] = item;
+    const suoyin = item.split(".")[1].split(" ")[0] as string;
+    rank[suoyin] = item;
   });
 
   const config = {
@@ -43,8 +47,8 @@ const Top = ({
     ior: 1.3,
   };
 
-  const blocksRef = useRef([]);
-  const namesRef = useRef([]);
+  const blocksRef = useRef<THREE.Mesh[]>([]);
+  const namesRef = useRef<THREE.Mesh[]>([]);
 
   const textConfig = {
     curveSegments: 32,
@@ -57,12 +61,20 @@ const Top = ({
   };
 
   const [makerVisible, setMakerVisible] = useState(false);
-  const [makerPosition, setMakerPosition] = useState([0, 2, 0]);
+  const [makerPosition, setMakerPosition] = useState<[number, number, number]>([
+    0, 2, 0,
+  ]);
   const [makerValue, setMakerValue] = useState("");
-  const [lines, setLines] = useState({ children: [] });
+  const [lines, setLines] = useState<{
+    children: {
+      start: [number, number, number];
+      mid: [number, number, number];
+      end: [number, number, number];
+    }[];
+  }>({ children: [] });
   const [targetPosition, setTargetPosition] = useState({ x: 0, z: 0 });
 
-  const handleClick = (e, index) => {
+  const handleClick = (e: ThreeEvent<MouseEvent>, index: number) => {
     e.stopPropagation();
     setLines({ children: [] });
     // 第二次点击选中的地图，让其恢复默认状态
@@ -71,16 +83,26 @@ const Top = ({
       handleFristClick(index);
     }
   };
-  const handleFristClick = (index) => {
-    let tempArr = [];
-    blocks.forEach((block, i) => {
+  const handleFristClick = (index: number) => {
+    let tempArr: {
+      start: [number, number, number];
+      mid: [number, number, number];
+      end: [number, number, number];
+    }[] = [];
+    blocks.obj.children.forEach((block, i) => {
       if (i !== index) {
         const startX =
-          (blocks[index].properties.center[0] - mapCenter[0]) * scale;
+          (blocks.properties[index].properties.center[0] - mapCenter[0]) *
+          scale;
         const startZ =
-          -(blocks[index].properties.center[1] - mapCenter[1]) * scale;
-        const endX = (block.properties.center[0] - mapCenter[0]) * scale;
-        const endZ = -(block.properties.center[1] - mapCenter[1]) * scale;
+          -(blocks.properties[index].properties.center[1] - mapCenter[1]) *
+          scale;
+        const endX =
+          (blocks.properties[index].properties.center[0] - mapCenter[0]) *
+          scale;
+        const endZ =
+          -(blocks.properties[index].properties.center[1] - mapCenter[1]) *
+          scale;
         tempArr.push({
           start: [
             startX,
@@ -102,13 +124,13 @@ const Top = ({
     });
     setLines({ children: [...tempArr] });
     // maker
-    const province = blocks[index].properties.name;
+    const province = blocks.properties[index].properties.name;
     setMakerVisible(true);
     setMakerValue(rank[province]);
     setMakerPosition([
-      (blocks[index].properties.center[0] - mapCenter[0]) * scale,
+      (blocks.properties[index].properties.center[0] - mapCenter[0]) * scale,
       2,
-      -(blocks[index].properties.center[1] - mapCenter[1]) * scale,
+      -(blocks.properties[index].properties.center[1] - mapCenter[1]) * scale,
     ]);
     // block
     blocksRef.current.forEach((block, lastIndex) => {
@@ -117,15 +139,15 @@ const Top = ({
           duration: 0.3,
           z: topHeightScale,
         });
-        blocksRef.current[lastIndex].material.color = new THREE.Color(
-          "#9cb8e4"
-        );
-        namesRef.current[lastIndex].material.opacity = 1;
+        (namesRef.current[index].material as THREE.MeshBasicMaterial).color =
+          new THREE.Color("#9cb8e4");
+        (namesRef.current[index].material as THREE.Material).opacity = 1;
       }
     });
     gsap.to(blocksRef.current[index].scale, { duration: 0.3, z: 0.8 });
-    blocksRef.current[index].material.color = new THREE.Color("#ffb47e");
-    namesRef.current[index].material.opacity = 0;
+    (blocksRef.current[index].material as THREE.MeshBasicMaterial).color =
+      new THREE.Color("#ffb47e");
+    (namesRef.current[index].material as THREE.Material).opacity = 0;
     // bird
     setTargetPosition({
       ...targetPosition,
@@ -133,7 +155,7 @@ const Top = ({
       z: tempArr[0].start[2],
     });
   };
-  const handleSecondClick = (index) => {
+  const handleSecondClick = (index: number) => {
     setMakerVisible(false);
     setMakerValue("");
     setMakerPosition([0, 2, 0]);
@@ -141,8 +163,9 @@ const Top = ({
       duration: 0.3,
       z: topHeightScale,
     });
-    blocksRef.current[index].material.color = new THREE.Color("#9cb8e4");
-    namesRef.current[index].material.opacity = 1;
+    (blocksRef.current[index].material as THREE.MeshBasicMaterial).color =
+      new THREE.Color("#9cb8e4");
+    (namesRef.current[index].material as THREE.MeshBasicMaterial).opacity = 1;
   };
   return (
     <>
@@ -166,11 +189,11 @@ const Top = ({
         rotation={[0, Math.PI * 1.1, Math.PI]}
         position-y={baseHeight + midHeightScale * baseHeight + 0.01}
       >
-        {blocks.map((item, index) => (
+        {blocks.properties.map((item, index) => (
           <group key={"city_" + index}>
             <Text3D
               ref={(el) => {
-                namesRef.current[index] = el;
+                if (el) namesRef.current[index] = el;
               }}
               font={"./MFTianLiNoncommercial_Regular.json"}
               position={[
@@ -192,24 +215,26 @@ const Top = ({
         rotation={[-Math.PI * 0.5, 0, Math.PI * 0.09]}
         position-y={baseHeight + midHeightScale * baseHeight + 0.01}
       >
-        {blocks.map((item, index) => (
+        {blocks.obj.children.map((item: THREE.Object3D, index: number) => (
           <group key={"top_" + index}>
             <mesh
               scale={[1, 1, topHeightScale]}
-              geometry={blocks[index].children[0].geometry}
+              geometry={
+                (blocks.obj.children[index].children[0] as THREE.Mesh).geometry
+              }
               ref={(el) => {
-                blocksRef.current[index] = el;
+                if (el) blocksRef.current[index] = el;
               }}
               onClick={(e) => handleClick(e, index)}
             >
               <meshPhysicalMaterial
                 {...config}
                 transmission={Math.sqrt(
-                  item.properties.value /
+                  blocks.properties[index].value /
                     Math.max(...Object.values(values.features))
                 )}
                 roughness={Math.sqrt(
-                  item.properties.value /
+                  blocks.properties[index].value /
                     Math.max(...Object.values(values.features))
                 )}
               />

@@ -43,24 +43,41 @@ const Map = ({
 }) => {
   const map: Object3DWithProperties = {
     obj: new THREE.Object3D(),
-    properties: {
-      adcode: 0,
-      name: "",
-      center: [0, 0],
-      centroid: [0, 0],
-      childrenNum: 0,
-      level: "",
-      parent: "",
-      subFeatureIndex: 0,
-      acroutes: [],
-    },
+    properties: [
+      {
+        type: "",
+        properties: {
+          adcode: 0,
+          name: "",
+          center: [0, 0],
+          centroid: [0, 0],
+          childrenNum: 0,
+          level: "",
+          parent: "",
+          subFeatureIndex: 0,
+          acroutes: [],
+        },
+        geometry: {
+          type: "",
+          coordinates: [[[[0, 0]]]],
+        },
+        value: 0,
+      },
+    ],
   };
   const projection = d3.geoMercator().center(mapCenter).translate([0, 0]);
 
+  // 整合数据
   processing(geoJson, values).features.forEach((element, index) => {
-    const province: Object3DWithProperties = {
+    const province: {
+      obj: THREE.Object3D;
+      properties: JSONData.MapJSONCityWithValue;
+    } = {
       obj: new THREE.Object3D(),
-      properties: element.properties,
+      properties: {
+        ...element,
+        value: 0,
+      },
     };
     const coordinates = element.geometry.coordinates;
 
@@ -109,6 +126,7 @@ const Map = ({
       });
     });
     map.obj.add(province.obj);
+    map.properties.push(province.properties);
   });
 
   return (
